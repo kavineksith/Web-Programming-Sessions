@@ -10,19 +10,35 @@ $message = "";
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: auth.php?message=" . urlencode("Please login to create posts."));
+    header("Location: auth.php?message=" . urlencode("Please login to update posts."));
     exit();
 }
 
-// Handle post creation
-if (isset($_POST['create'])) {
+// Get post ID from URL
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    header("Location: index.php?message=" . urlencode("Post ID is required."));
+    exit();
+}
+
+$id = validateInput($_GET['id']);
+$post = getPostById($id);
+
+// Check if post exists
+if (!$post || $post->num_rows === 0) {
+    header("Location: index.php?message=" . urlencode("Post not found."));
+    exit();
+}
+
+$postData = $post->fetch_assoc();
+
+// Handle post update
+if (isset($_POST['update'])) {
     $title = validateInput($_POST['title']);
     $description = validateInput($_POST['description']);
-    $post_image = isset($_FILES['post_image']) ? $_FILES['post_image'] : null;
     
-    $message = createPost($title, $description, $post_image);
+    $message = updatePost($id, $title, $description);
     
-    // Redirect after successful creation
+    // Redirect after successful update
     if (strpos($message, "successful") !== false) {
         header("Location: index.php?message=" . urlencode($message));
         exit();
@@ -35,13 +51,13 @@ if (isset($_POST['create'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Post</title>
+    <title>Update Post</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">Create New Post</h2>
+        <h2 class="text-center">Update Post</h2>
         
         <!-- Display messages -->
         <?php if (isset($message) && !empty($message)): ?>
@@ -50,28 +66,23 @@ if (isset($_POST['create'])) {
             </div>
         <?php endif; ?>
         
-        <!-- Create Post Form -->
+        <!-- Update Post Form -->
         <div class="card mb-3">
             <div class="card-header">
-                <h5>Post Details</h5>
+                <h5>Edit Post #<?php echo $id; ?></h5>
             </div>
             <div class="card-body">
-                <form action="create.php" method="POST" enctype="multipart/form-data">
+                <form action="update.php?id=<?php echo $id; ?>" method="POST">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
+                        <input type="text" class="form-control" id="title" name="title" value="<?php echo $postData['title']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="post_image" class="form-label">Post Image (optional)</label>
-                        <input type="file" class="form-control" id="post_image" name="post_image">
-                        <div class="form-text">Upload JPG, JPEG, PNG or GIF (max 5MB)</div>
+                        <textarea class="form-control" id="description" name="description" rows="5" required><?php echo $postData['description']; ?></textarea>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-success" name="create">Create Post</button>
+                        <button type="submit" class="btn btn-warning" name="update">Update Post</button>
                         <a href="index.php" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>

@@ -23,9 +23,6 @@ if (isset($_POST['search'])) {
         }
     }
 }
-
-// Check if user is logged in
-$isLoggedIn = isset($_SESSION['user_id']);
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +53,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             <div class="card-body">
                 <form action="search.php" method="POST">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="searchQuery" name="query" placeholder="Search for posts..." value="<?php echo isset($_POST['query']) ? htmlspecialchars($_POST['query']) : ''; ?>" required>
+                        <input type="text" class="form-control" id="searchQuery" name="query" placeholder="Search for posts..." value="<?php echo isset($_POST['query']) ? $_POST['query'] : ''; ?>" required>
                         <button type="submit" class="btn btn-info" name="search">Search</button>
                     </div>
                 </form>
@@ -83,15 +80,11 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             <?php while ($row = $posts->fetch_assoc()): ?>
                                 <tr>
                                     <td><?php echo $row['id']; ?></td>
-                                    <td><?php echo htmlspecialchars($row['title']); ?></td>
-                                    <td><?php echo strlen($row['description']) > 100 ? htmlspecialchars(substr($row['description'], 0, 100)) . '...' : htmlspecialchars($row['description']); ?></td>
+                                    <td><?php echo $row['title']; ?></td>
+                                    <td><?php echo strlen($row['description']) > 100 ? substr($row['description'], 0, 100) . '...' : $row['description']; ?></td>
                                     <td>
-                                        <?php if ($isLoggedIn && isset($row['user_id']) && $row['user_id'] == $_SESSION['user_id']): ?>
-                                            <a href="update.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                                            <a href="delete.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
-                                        <?php else: ?>
-                                            <a href="view.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm">View</a>
-                                        <?php endif; ?>
+                                        <a href="update.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="delete.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>

@@ -18,9 +18,8 @@ if (!isset($_SESSION['user_id'])) {
 if (isset($_POST['create'])) {
     $title = validateInput($_POST['title']);
     $description = validateInput($_POST['description']);
-    $post_image = isset($_FILES['post_image']) ? $_FILES['post_image'] : null;
     
-    $message = createPost($title, $description, $post_image);
+    $message = createPost($title, $description);
     
     // Redirect after successful creation
     if (strpos($message, "successful") !== false) {
@@ -56,7 +55,7 @@ if (isset($_POST['create'])) {
                 <h5>Post Details</h5>
             </div>
             <div class="card-body">
-                <form action="create.php" method="POST" enctype="multipart/form-data">
+                <form action="create.php" method="POST">
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
                         <input type="text" class="form-control" id="title" name="title" required>
@@ -64,11 +63,6 @@ if (isset($_POST['create'])) {
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="post_image" class="form-label">Post Image (optional)</label>
-                        <input type="file" class="form-control" id="post_image" name="post_image">
-                        <div class="form-text">Upload JPG, JPEG, PNG or GIF (max 5MB)</div>
                     </div>
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-success" name="create">Create Post</button>

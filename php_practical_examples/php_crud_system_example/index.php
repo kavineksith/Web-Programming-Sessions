@@ -46,10 +46,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p>Welcome, <?php echo $_SESSION['username']; ?>!</p>
-                        <?php if (isset($_SESSION['profile_image']) && !empty($_SESSION['profile_image'])): ?>
-                            <img src="<?php echo htmlspecialchars($_SESSION['profile_image']); ?>" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-                        <?php endif; ?>
-                        <a href="profile.php" class="btn btn-info btn-sm">View Profile</a>
                     </div>
                     <div>
                         <a href="create.php" class="btn btn-success me-2">Create New Post</a>
@@ -92,7 +88,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             <th>ID</th>
                             <th>Title</th>
                             <th>Description</th>
-                            <th>Image</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -104,13 +99,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                     <td><?php echo $row['title']; ?></td>
                                     <td><?php echo strlen($row['description']) > 100 ? substr($row['description'], 0, 100) . '...' : $row['description']; ?></td>
                                     <td>
-                                        <?php if (!empty($row['image_path'])): ?>
-                                            <img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="Post Image" style="max-width: 100px; max-height: 100px;">
-                                        <?php else: ?>
-                                            No Image
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
                                         <a href="update.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
                                         <a href="delete.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
                                     </td>
@@ -118,7 +106,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" class="text-center">No posts found</td>
+                                <td colspan="4" class="text-center">No posts found</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

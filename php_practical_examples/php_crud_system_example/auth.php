@@ -13,9 +13,8 @@ if (isset($_POST['signup'])) {
     $username = validateInput($_POST['username']);
     $email = validateInput($_POST['email']);
     $password = validateInput($_POST['password']);
-    $profile_image = isset($_FILES['profile_image']) ? $_FILES['profile_image'] : null;
     
-    $message = registerUser($username, $email, $password, $profile_image);
+    $message = registerUser($username, $email, $password);
     
     // Redirect after successful signup
     if ($message == "Signup successful.") {
@@ -77,7 +76,7 @@ if (isset($_POST['logout'])) {
                         <h5>Signup</h5>
                     </div>
                     <div class="card-body">
-                        <form action="auth.php" method="POST" enctype="multipart/form-data">
+                        <form action="auth.php" method="POST">
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" required>
@@ -89,11 +88,6 @@ if (isset($_POST['logout'])) {
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="profile_image" class="form-label">Profile Image (optional)</label>
-                                <input type="file" class="form-control" id="profile_image" name="profile_image">
-                                <div class="form-text">Upload JPG, JPEG, PNG or GIF (max 5MB)</div>
                             </div>
                             <button type="submit" class="btn btn-primary" name="signup">Sign Up</button>
                         </form>
